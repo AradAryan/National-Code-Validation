@@ -10,6 +10,11 @@ namespace National_Code_Validation
         public string Name { get; set; }
         public string LastName { get; set; }
         public string BirthDate { get; set; }
-        public int NationalID { get; set; }
+        public string NationalID { get; set; }
+
+        /// <summary>
+        /// Using This Property for Counting Get Person Function Run Counts
+        /// </summary>
+        public static int GetPersonCounter { get; set; }
     }
 }

@@ -13,77 +13,68 @@ namespace National_Code_Validation
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
-    // To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line. 
+    // To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line.
     // [System.Web.Script.Services.ScriptService]
-    public class Inquiry : WebService
+    public class WebService1 : WebService
     {
 
         [WebMethod]
         public bool ValidateNationalCode(string code)
         {
-            int validatingCode = int.Parse(code[9].ToString());
-            int x = 0;
-            int i = 10;
-            bool result = false;
+            // input has 10 digits that all of them are not equal
+            if (!Regex.IsMatch(code, @"^(?!(\d)\1{9})\d{10}$"))
+                return false;
 
-            Regex reg = new Regex(@"\d{10}");
-            var isDigit = reg.IsMatch(code);
+            var check = Convert.ToInt32(code.Substring(9, 1));
+            var sum = Enumerable.Range(0, 9)
+                .Select(x => Convert.ToInt32(code.Substring(x, 1)) * (10 - x))
+                .Sum() % 11;
 
-            if (code.Length == 10 && isDigit)
-            {
-                do
-                {
-                    int y = int.Parse(code[10 - i].ToString()) * i;
-                    x += y;
-                    i--;
-                } while (i >= 2);
-
-                var c = x % 11;
-                if (c >= 2)
-                {
-                    if (validatingCode == 11 - c)
-                    {
-                        result = true;
-                    }
-                    else
-                    {
-                        result = false;
-                    }
-                }
-            }
-            return result;
+            return sum < 2 && check == sum || sum >= 2 && check + sum == 11;
         }
 
+        /// <summary>
+        /// Get Person National Code and Return The Informations
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [WebMethod]
-        public string GetPerson(int id)
+        public string GetPerson(string id)
         {
-            List<PersonInformation> persons = new List<PersonInformation>
+            string output;
+            if (PersonInformation.GetPersonCounter < 2)
+            {
+                List<PersonInformation> persons = new List<PersonInformation>
             {
                 new PersonInformation
                 {
-                    Name="Arad",
+                    Name = "Arad",
                     LastName = "Aryan",
-                    NationalID = 0410670030,
+                    NationalID = "0410670030",
                     BirthDate = "25 Aban 1378",
                 },
                 new PersonInformation
                 {
-                    Name = "Mohamad Javad",
+                    Name = "Mohammad Javad",
                     LastName = "ArabSalmany",
-                    NationalID = 0410670031,
+                    NationalID = "0410670031",
                     BirthDate = "25 Aban 78"
                 },
                 new PersonInformation
                 {
                     Name = "Hamid Reza",
-                    LastName = "Molahajizade",
-                    NationalID = 0410670040,
+                    LastName = "Mola haji zade",
+                    NationalID = "0410670040",
                     BirthDate = "17 Shahrivar 1372",
                 },
             };
 
-            var foundedPerson = persons.Where(person => person.NationalID == id).FirstOrDefault();
-            string output = $"Name: {foundedPerson.Name}, Lastname: {foundedPerson.LastName}, ID: {foundedPerson.NationalID}";
+                var foundedPerson = persons.Where(person => person.NationalID == id).FirstOrDefault();
+                output = $"Name: {foundedPerson.Name}, LastName: {foundedPerson.LastName}, ID: {foundedPerson.NationalID}";
+                PersonInformation.GetPersonCounter++;
+            }
+            else
+                output = "404 Not Person Found";
             return output;
         }
     }
