@@ -17,11 +17,11 @@ namespace National_Code_Validation
     // [System.Web.Script.Services.ScriptService]
     public class WebService1 : WebService
     {
-
+        #region Validate National Code
         [WebMethod]
         public bool ValidateNationalCode(string code)
         {
-            // input has 10 digits that all of them are not equal
+            /// input has 10 digits that all of them are not equal
             if (!Regex.IsMatch(code, @"^(?!(\d)\1{9})\d{10}$"))
                 return false;
 
@@ -32,7 +32,9 @@ namespace National_Code_Validation
 
             return sum < 2 && check == sum || sum >= 2 && check + sum == 11;
         }
+        #endregion
 
+        #region GetPerson Function
         /// <summary>
         /// Get Person National Code and Return The Informations
         /// </summary>
@@ -77,5 +79,6 @@ namespace National_Code_Validation
                 output = "404 Not Person Found";
             return output;
         }
+        #endregion
     }
 }
