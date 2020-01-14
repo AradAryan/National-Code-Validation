@@ -18,6 +18,11 @@ namespace National_Code_Validation
     public class WebService1 : WebService
     {
         #region Validate National Code
+        /// <summary>
+        /// Validating National Code
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         [WebMethod]
         public bool ValidateNationalCode(string code)
         {
